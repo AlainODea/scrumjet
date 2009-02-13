@@ -1,0 +1,3 @@
+-record(scrumjet_task, {id, headline, description}).
+-record(scrumjet_board, {id, title}).
+-record(scrumjet_category, {id, name}).
