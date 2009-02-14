@@ -55,6 +55,7 @@ init([]) ->
     ets:new(scrumjet_board, [set, public, named_table, {keypos,2}]),
     ets:new(scrumjet_category, [set, public, named_table, {keypos,2}]),
     ets:new(scrumjet_category_tasks, [bag, public, named_table]),
+    ets:new(scrumjet_board_categories, [bag, public, named_table]),
     WebConfig = [
 		 {ip, Ip},
 		 {port, 8000},
