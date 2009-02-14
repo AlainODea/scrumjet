@@ -34,7 +34,7 @@ upgrade() ->
 		      supervisor:delete_child(?MODULE, Id),
 		      ok
 	      end, ok, Kill),
-
+    [ets:delete(Tab) || Tab <- [scrumjet_task, scrumjet_board, scrumjet_category, scrumjet_category_tasks, scrumjet_board_categories]],
     [supervisor:start_child(?MODULE, Spec) || Spec <- Specs],
     ok.
 
