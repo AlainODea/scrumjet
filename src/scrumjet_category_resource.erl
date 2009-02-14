@@ -47,11 +47,13 @@ to_html(ReqProps, State) ->
 <ul>
 ">>,
 lists:foldl(fun html:list_item/2, [],
-    qlc:q([Task || Task <- qlc:table(scrumjet_task),
-        {CategoryID, TaskID} <- qlc:table(scrumjet_category_tasks),
-        CategoryID =:= ID,
-        TaskID =:= Task#scrumjet_task.id])
-    ),
+    qlc:eval(
+        qlc:q([Task || Task <- ets:table(scrumjet_task),
+            {CategoryID, TaskID} <- ets:table(scrumjet_category_tasks),
+            CategoryID =:= ID,
+            TaskID =:= Task#scrumjet_task.id])
+    )
+),
 <<"
 </ul>
 </body>
