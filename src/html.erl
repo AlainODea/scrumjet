@@ -3,10 +3,10 @@
 -include("scrumjet.hrl").
 -compile(export_all).
 
-list_item(R=#scrumjet_task{id=ID, headline=L}, Items) -> li_(R, L, ID, Items);
-list_item(R=#scrumjet_category{id=ID, name=L}, Items) -> li_(R, L, ID, Items);
-list_item(R=#scrumjet_board{id=ID, title=  L}, Items) -> li_(R, L, ID, Items);
-list_item(Other, Items) ->
+li(R=#scrumjet_task{id=ID, headline=L}, Items) -> li_(R, L, ID, Items);
+li(R=#scrumjet_category{id=ID, name=L}, Items) -> li_(R, L, ID, Items);
+li(R=#scrumjet_board{id=ID, title=  L}, Items) -> li_(R, L, ID, Items);
+li(Other, Items) ->
     [<<"
 <li>",Other/binary,"</li>">>|Items].
 

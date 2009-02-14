@@ -20,7 +20,7 @@ to_html(_ReqProps, State) ->
 <h1>ScrumJet Boards</h1>
 <ul>
 ">>,
-ets:foldl(fun html:list_item/2, [], scrumjet_board),
+ets:foldl(fun html:li/2, [], scrumjet_board),
 <<"
 </ul>
 </body>

@@ -46,7 +46,7 @@ to_html(ReqProps, State) ->
 <h2>Tasks</h2>
 <ul>
 ">>,
-lists:foldl(fun html:list_item/2, [],
+lists:foldl(fun html:li/2, [],
     qlc:eval(
         qlc:q([Task || Task <- ets:table(scrumjet_task),
             {CategoryID, TaskID} <- ets:table(scrumjet_category_tasks),
