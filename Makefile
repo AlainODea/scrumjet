@@ -17,3 +17,6 @@ clean:
 
 ebin/$(APP).app:
 	@cp -v src/$(APP).app $@
+
+run:
+	./start-dev.sh

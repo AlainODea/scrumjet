@@ -35,21 +35,20 @@ resource_exists(ReqProps, Context) ->
         [Category] -> {true, Context#context{category=Category}}
     end.
 
-to_html(ReqProps, State) ->
-    ID = list_to_binary(?PATH(ReqProps)),
-    {[<<"
+to_html(_ReqProps, Context=#context{category=#scrumjet_category{id=ID, name=Name}}) ->
+    {[<<"<!DOCTYPE html>
 <html>
 <head>
-<title>Category ID: ",ID/binary," - ScrumJet</title>
+<title>",Name/binary," - ScrumJet</title>
 <body>
-<h1>ScrumJet Category ID: ",ID/binary,"</h1>
+<h1>",Name/binary,"</h1>
 <h2>Tasks</h2>
 <ul>
 ">>,
 lists:foldl(fun html:li/2, [],
     qlc:eval(
-        qlc:q([Task || Task <- ets:table(scrumjet_task),
-            {CategoryID, TaskID} <- ets:table(scrumjet_category_tasks),
+        qlc:q([Task || Task <- mnesia:table(scrumjet_task),
+            {CategoryID, TaskID} <- mnesia:table(scrumjet_category_tasks),
             CategoryID =:= ID,
             TaskID =:= Task#scrumjet_task.id])
     )
@@ -58,7 +57,7 @@ lists:foldl(fun html:li/2, [],
 </ul>
 </body>
 </html>
-">>], State}.
+">>], Context}.
 
 %% should accept PUT requests to create new tasks
 allowed_methods(_ReqProps, Context) -> {['GET', 'HEAD', 'PUT'], Context}.

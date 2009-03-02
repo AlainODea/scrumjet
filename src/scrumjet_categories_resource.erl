@@ -11,7 +11,7 @@
 init([]) -> {ok, undefined}.
 
 to_html(_ReqProps, State) ->
-    {[<<"
+    {[<<"<!DOCTYPE html>
 <html>
 <head>
 <title>Categories - ScrumJet</title>
@@ -25,4 +25,4 @@ ets:foldl(fun html:li/2, [], scrumjet_category),
 </ul>
 </body>
 </html>
-    ">>], State}.
+">>], State}.

@@ -36,10 +36,10 @@ resource_exists(ReqProps, Context) ->
 
 to_html(_ReqProps, Context) ->
     #context{board=#scrumjet_board{id=ID, title=Title}} = Context,
-    {[<<"
+    {[<<"<!DOCTYPE html>
 <html>
 <head>
-<title>Task ID: ",ID/binary," - ScrumJet</title>
+<title>Board ID: ",ID/binary," - ScrumJet</title>
 <body>
 <h1>",Title/binary," (",ID/binary,")</h1>
 <p>",Title/binary,"</p>

@@ -1,0 +1,2 @@
+-module(scrumjet_category).
+-include("scrumjet_store.hrl").

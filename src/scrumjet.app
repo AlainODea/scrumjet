@@ -1,14 +1,23 @@
 {application, scrumjet,
  [{description, "scrumjet"},
-  {vsn, "0.18"},
+  {vsn, "0.1"},
   {modules, [
     scrumjet,
     scrumjet_app,
     scrumjet_sup,
     scrumjet_deps,
-    scrumjet_resource
+    scrumjet_task,
+    scrumjet_category,
+    scrumjet_board,
+    scrumjet_resource,
+    scrumjet_tasks_resource,
+    scrumjet_categories_resource,
+    scrumjet_boards_resource,
+    scrumjet_task_resource,
+    scrumjet_category_resource,
+    scrumjet_board_resource
   ]},
-  {registered, []},
+  {registered, [scrumjet_task]},
   {mod, {scrumjet_app, []}},
   {env, []},
-  {applications, [kernel, stdlib, crypto]}]}.
+  {applications, [kernel, stdlib, crypto, mnesia]}]}.

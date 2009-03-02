@@ -13,4 +13,4 @@ li(Other, Items) ->
 li_(Record, Label, ID, Items) ->
     Href = uri:for(Record),
     [<<"
-<li><a href=\"",Href/binary,"\">",Label/binary," (",ID/binary,")</a></li>">>|Items].
+<li><a href='",Href/binary,"'>",Label/binary," (",ID/binary,")</a></li>">>|Items].

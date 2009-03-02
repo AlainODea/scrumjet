@@ -11,7 +11,7 @@
 init([]) -> {ok, undefined}.
 
 to_html(_ReqProps, State) ->
-    {[<<"
+    {[<<"<!DOCTYPE html>
 <html>
 <head>
 <title>Boards - ScrumJet</title>

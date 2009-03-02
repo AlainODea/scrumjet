@@ -34,13 +34,14 @@ upgrade() ->
 		      supervisor:delete_child(?MODULE, Id),
 		      ok
 	      end, ok, Kill),
-    [ets:delete(Tab) || Tab <- [scrumjet_task, scrumjet_board, scrumjet_category, scrumjet_category_tasks, scrumjet_board_categories]],
     [supervisor:start_child(?MODULE, Spec) || Spec <- Specs],
     ok.
 
 %% @spec init([]) -> SupervisorTree
 %% @doc supervisor callback.
 init([]) ->
+    mnesia:create_schema([node()]),
+    mnesia:start(),
     Ip = case os:getenv("WEBMACHINE_IP") of false -> "0.0.0.0"; Any -> Any end,   
     Dispatch = [
     {[], scrumjet_resource, []},
@@ -51,18 +52,22 @@ init([]) ->
     {["tasks"], scrumjet_tasks_resource, []},
     {["tasks", '*'], scrumjet_task_resource, []}
     ],
-    ets:new(scrumjet_task, [set, public, named_table, {keypos,2}]),
-    ets:new(scrumjet_board, [set, public, named_table, {keypos,2}]),
-    ets:new(scrumjet_category, [set, public, named_table, {keypos,2}]),
-    ets:new(scrumjet_category_tasks, [bag, public, named_table]),
-    ets:new(scrumjet_board_categories, [bag, public, named_table]),
     WebConfig = [
-		 {ip, Ip},
-		 {port, 8000},
-                 {log_dir, "priv/log"},
-		 {dispatch, Dispatch}],
+		{ip, Ip},
+		{port, 8000},
+            {log_dir, "priv/log"},
+		{dispatch, Dispatch}],
     Web = {webmachine_mochiweb,
-	   {webmachine_mochiweb, start, [WebConfig]},
-	   permanent, 5000, worker, dynamic},
-    Processes = [Web],
+	    {webmachine_mochiweb, start, [WebConfig]},
+	    permanent, 5000, worker, dynamic},
+	TaskStore = {scrumjet_task,
+   	    {scrumjet_task, start_link, []},
+   	    permanent, 5000, worker, [scrumjet_task]},
+    CategoryStore = {scrumjet_category,
+  	    {scrumjet_category, start_link, []},
+  	    permanent, 5000, worker, [scrumjet_category]},
+    BoardStore = {scrumjet_board,
+ 	    {scrumjet_board, start_link, []},
+ 	    permanent, 5000, worker, [scrumjet_board]},
+    Processes = [Web, TaskStore, CategoryStore, BoardStore],
     {ok, {{one_for_one, 10, 10}, Processes}}.
