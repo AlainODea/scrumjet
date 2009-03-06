@@ -52,11 +52,11 @@ allowed_methods(_ReqProps, Context) -> {['GET', 'HEAD', 'PUT'], Context}.
 content_types_accepted(_ReqProps, Context) -> {[{"application/x-www-urlencoded", from_webform}], Context}.
 
 from_webform(ReqProps, Context) ->
-    ID = list_to_binary(?PATH(ReqProps)),
+    ID = ?PATH(ReqProps),
     Req = ?REQ(ReqProps),
     Body = Req:recv_body(),
     Params = mochiweb_util:parse_qs(Body),
-    Headline = proplists:get_value("headline", Params, <<"">>),
-    Description = proplists:get_value("description", Params, <<"">>),
-    scrumjet_task:store(#scrumjet_task{id=ID, description=Description, headline=Headline}),
+    Headline = proplists:get_value("headline", Params, ""),
+    Description = proplists:get_value("description", Params, ""),
+    scrumjet_task:store(#scrumjet_task{id=ID, description=list_to_binary(Description), headline=list_to_binary(Headline)}),
     {true, Context}.

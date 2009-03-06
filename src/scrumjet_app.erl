@@ -13,6 +13,7 @@
 %% @spec start(_Type, _StartArgs) -> ServerRet
 %% @doc application start callback for scrumjet.
 start(_Type, _StartArgs) ->
+    mnesia:create_schema([node()]),
     mnesia:start(),
     scrumjet_deps:ensure(),
     scrumjet_sup:start_link().

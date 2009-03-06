@@ -40,8 +40,6 @@ upgrade() ->
 %% @spec init([]) -> SupervisorTree
 %% @doc supervisor callback.
 init([]) ->
-    mnesia:create_schema([node()]),
-    mnesia:start(),
     Ip = case os:getenv("WEBMACHINE_IP") of false -> "0.0.0.0"; Any -> Any end,   
     Dispatch = [
     {[], scrumjet_resource, []},
