@@ -28,7 +28,7 @@
 init([]) -> {ok, #context{}}.
 
 resource_exists(ReqProps, Context) ->
-    ID = list_to_binary(?PATH(ReqProps)),
+    ID = ?PATH(ReqProps),
     case scrumjet_task:find({id, ID}) of
         [] -> {false, Context};
         [Task] -> {true, Context#context{task=Task}}
@@ -38,9 +38,9 @@ to_html(_ReqProps, Context=#context{task=#scrumjet_task{id=ID, headline=Headline
     {[<<"<!DOCTYPE html>
 <html>
 <head>
-<title>Task ID: ",ID/binary," - ScrumJet</title>
+<title>Task ID: ">>,ID,<<" - ScrumJet</title>
 <body>
-<h1>",Headline/binary," (",ID/binary,")</h1>
+<h1>",Headline/binary," (">>,ID,<<")</h1>
 <p>",Description/binary,"</p>
 </body>
 </html>
