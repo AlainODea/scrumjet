@@ -29,7 +29,7 @@
 init([]) -> {ok, #context{}}.
 
 resource_exists(ReqProps, Context) ->
-    ID = list_to_binary(?PATH(ReqProps)),
+    ID = ?PATH(ReqProps),
     case ets:lookup(scrumjet_category, ID) of
         [] -> {false, Context};
         [Category] -> {true, Context#context{category=Category}}
@@ -45,14 +45,7 @@ to_html(_ReqProps, Context=#context{category=#scrumjet_category{id=ID, name=Name
 <h2>Tasks</h2>
 <ul>
 ">>,
-lists:foldl(fun html:li/2, [],
-    qlc:eval(
-        qlc:q([Task || Task <- mnesia:table(scrumjet_task),
-            {CategoryID, TaskID} <- mnesia:table(scrumjet_category_tasks),
-            CategoryID =:= ID,
-            TaskID =:= Task#scrumjet_task.id])
-    )
-),
+list(),
 <<"
 </ul>
 </body>
@@ -65,9 +58,15 @@ allowed_methods(_ReqProps, Context) -> {['GET', 'HEAD', 'PUT'], Context}.
 content_types_accepted(_ReqProps, Context) -> {[{"application/x-www-urlencoded", from_webform}], Context}.
 
 from_webform(ReqProps, Context) ->
-    ID = list_to_binary(?PATH(ReqProps)),
+    ID = ?PATH(ReqProps),
     Req = ?REQ(ReqProps),
     Params = Req:parse_qs(),
-    Name = proplists:get_value(name, Params, <<"">>),
-    ets:insert(scrumjet_task, #scrumjet_category{id=ID, name=Name}),
+    Name = proplists:get_value(name, Params, ""),
+    scrumjet_category:store(#scrumjet_category{id=ID, name=list_to_binary(Name)}),
     {true, Context}.
+
+list() ->
+    {atomic, List} = mnesia:transaction(fun() ->
+        mnesia:foldl(fun html:li/2, [], scrumjet_task)
+    end),
+    List.

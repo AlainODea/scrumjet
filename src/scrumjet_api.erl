@@ -6,9 +6,13 @@ task_example() ->
     put_form("http://127.0.0.1:8000/tasks/US-191",
 <<"headline=TDECU%20Users%20Extract&description=TDECU%20needs%20the%20Users%20extract%20set%20up%20on%20their%20site">>).
 
+category(ID, Name) when is_list(ID), is_list(Name) ->
+    put_form("http://127.0.0.1:8000/categories/" ++ mochiweb_util:quote_plus(ID),
+        list_to_binary(mochiweb_util:urlencode([{name,Name}]))).
+
 task(ID, Headline, Description) when is_list(ID), is_list(Headline), is_list(Description) ->
     put_form("http://127.0.0.1:8000/tasks/" ++ mochiweb_util:quote_plus(ID),
-        list_to_binary(mochiweb_util:urlencode(lists:zip([<<"headline">>,<<"description">>],[Headline,Description])))).
+        list_to_binary(mochiweb_util:urlencode([{headline,Headline}, {description,Description}]))).
 
 put_form(URI, Body) when is_list(URI), is_binary(Body) ->
     Headers = [],
