@@ -34,7 +34,6 @@ shutdown() ->
 
 init([]) ->
     process_flag(trap_exit, true),
-    io:format("~p (~p) starting...~n", [?MODULE, self()]),
     init_store(),
     {ok, #state{}}.
 
@@ -48,7 +47,6 @@ handle_call({retrieve, Params}, _From, State) ->
 
 handle_call(stop, _From, State) ->
     mnesia:stop(),
-    io:format("Shutting down...~n"),
     {stop, normal, State};
 
 handle_call(_Request, _From, State) ->
@@ -84,12 +82,13 @@ retrieve({id, Id}) ->
     Records.
 
 init_store() ->
+    mnesia:start(),
     try
         mnesia:table_info(?MODULE, type)
     catch
         exit: _ ->
             mnesia:create_table(?MODULE, [{attributes, record_info(fields, ?MODULE)},
-                {type, bag},
+                {type, set},
                 {disc_copies, [node()]}])
     end.
 
