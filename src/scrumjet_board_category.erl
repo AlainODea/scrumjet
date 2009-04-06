@@ -1,8 +1,8 @@
 %% @author Alain O'Dea <alain.odea@gmail.com>
 %% @copyright 2009 Alain O'Dea.
-%% @doc ScrumJet Category-Task Relationship Storage Server.
+%% @doc ScrumJet Board-Category Relationship Storage Server.
 
--module(scrumjet_category_task).
+-module(scrumjet_board_category).
 
 -behaviour(gen_server).
 
@@ -75,22 +75,11 @@ insert(Record=#?MODULE{}) ->
     end,
     mnesia:transaction(F).
 
-retrieve({id, Id, TaskId}) ->
+retrieve({id, Id, CategoryId}) ->
     F = fun() ->
         Query = qlc:q([M || M <- mnesia:table(?MODULE),
                   M#?MODULE.id =:= Id,
-                  M#?MODULE.task_id =:= TaskId]),
-        qlc:eval(Query)
-    end,
-    {atomic, Records} = mnesia:transaction(F),
-    Records;
-retrieve({tasks, Id}) ->
-    F = fun() ->
-        Query = qlc:q([Task ||
-                    Join <- mnesia:table(?MODULE),
-                    Task <- mnesia:table(scrumjet_task),
-                    Join#?MODULE.id =:= Id,
-                    Task#scrumjet_task.id =:= Join#?MODULE.task_id]),
+                  M#?MODULE.category_id =:= CategoryId]),
         qlc:eval(Query)
     end,
     {atomic, Records} = mnesia:transaction(F),
@@ -100,8 +89,19 @@ retrieve({categories, Id}) ->
         Query = qlc:q([Category ||
                     Join <- mnesia:table(?MODULE),
                     Category <- mnesia:table(scrumjet_category),
-                    Join#?MODULE.task_id =:= Id,
-                    Category#scrumjet_task.id =:= Join#?MODULE.id]),
+                    Join#?MODULE.id =:= Id,
+                    Category#scrumjet_task.id =:= Join#?MODULE.category_id]),
+        qlc:eval(Query)
+    end,
+    {atomic, Records} = mnesia:transaction(F),
+    Records;
+retrieve({boards, Id}) ->
+    F = fun() ->
+        Query = qlc:q([Board ||
+                    Join <- mnesia:table(?MODULE),
+                    Board <- mnesia:table(scrumjet_board),
+                    Join#?MODULE.category_id =:= Id,
+                    Board#scrumjet_task.id =:= Join#?MODULE.id]),
         qlc:eval(Query)
     end,
     {atomic, Records} = mnesia:transaction(F),

@@ -43,9 +43,9 @@ to_html(ReqData, Context=#context{task=#scrumjet_task{id=ID, headline=Headline, 
 <h1>">>,Headline,<<" (">>,ID,<<")</h1>
 <p>">>,Description,<<"</p>
 <h2>Categories</h2>
-<ul>
+<ul id='categories'>
 ">>,
-list(ID),
+categories(ID),
 <<"
 </ul>
 </body>
@@ -64,5 +64,5 @@ from_webform(ReqData, Context=#context{task=Task}) ->
     scrumjet_task:store(Task#scrumjet_task{description=Description, headline=Headline}),
     {true, ReqData, Context}.
 
--spec list(string()) -> iolist().
-list(ID) -> lists:foldl(fun html:li/2, [], scrumjet_category_task:find({categories, ID})).
+-spec categories(string()) -> iolist().
+categories(ID) -> lists:foldl(fun html:li/2, [], scrumjet_category_task:find({categories, ID})).

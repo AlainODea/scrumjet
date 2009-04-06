@@ -18,11 +18,18 @@ to_html(ReqData, Context) ->
 </head>
 <body>
 <h1>ScrumJet Boards</h1>
-<ul>
+<ul id='boards'>
 ">>,
-mnesia:foldl(fun html:li/2, [], scrumjet_board),
+boards(),
 <<"
 </ul>
 </body>
 </html>
     ">>], ReqData, Context}.
+
+-spec boards() -> iolist().
+boards() ->
+    {atomic, List} = mnesia:transaction(fun() ->
+        mnesia:foldl(fun html:li/2, [], scrumjet_board)
+    end),
+    List.

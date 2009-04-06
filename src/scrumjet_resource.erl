@@ -18,10 +18,10 @@ to_html(ReqData, Context) ->
 </head>
 <body>
 <h1>Welcome to ScrumJet!</h1>
-<ul>
-<li><a href='tasks/'>Tasks</a></li>
-<li><a href='categories/'>Categories</a></li>
-<li><a href='boards/'>Boards</a></li>
+<ul id='views'>
+<li><a id='tasks' href='tasks/'>Tasks</a></li>
+<li><a id='categories' href='categories/'>Categories</a></li>
+<li><a id='board' href='boards/'>Boards</a></li>
 </ul>
 </body>
 </html>

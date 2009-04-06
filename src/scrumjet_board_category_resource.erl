@@ -1,8 +1,8 @@
 %% @author Alain O'Dea <alain.odea@gmail.com>
 %% @copyright 2009 Alain O'Dea.
-%% @doc ScrumJet Category-Task Relationship Resource.
+%% @doc ScrumJet Board-Category Relationship Resource.
 
--module(scrumjet_category_task_resource).
+-module(scrumjet_board_category_resource).
 -author('Alain O\'Dea <alain.odea@gmail.com>').
 -export([init/1]).
 %% webmachine resource API
@@ -46,29 +46,29 @@
 -include_lib("webmachine/include/webmachine.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 
--record(context, {category_task}).
+-record(context, {board_category}).
 
 init([]) -> {ok, #context{}}.
 
 resource_exists(ReqData, Context) ->
     DispatchPath = wrq:disp_path(ReqData),
     case string:tokens(DispatchPath, ";") of
-        [ID, TaskID] ->
-            case scrumjet_category_task:find({id, ID, TaskID}) of
-                [] -> {false, ReqData, Context#context{category_task=#scrumjet_category_task{id=ID, task_id=TaskID}}};
-                [CategoryTask] -> {true, ReqData, Context#context{category_task=CategoryTask}}
+        [ID, CategoryID] ->
+            case scrumjet_board_category:find({id, ID, CategoryID}) of
+                [] -> {false, ReqData, Context#context{board_category=#scrumjet_board_category{id=ID, category_id=CategoryID}}};
+                [BoardCategory] -> {true, ReqData, Context#context{board_category=BoardCategory}}
             end;
         _ -> {{halt, 400}, ReqData, Context}
     end.
 
-to_html(ReqData, Context=#context{category_task=#scrumjet_category_task{id=ID, task_id=TaskID}}) ->
+to_html(ReqData, Context=#context{board_category=#scrumjet_board_category{id=ID, category_id=CategoryID}}) ->
     {[<<"<!DOCTYPE html>
 <html>
 <head>
-<title>Category/Task ID: ">>,ID,<<"/">>,TaskID,<<" - ScrumJet</title>
+<title>Board/Category ID: ">>,ID,<<"/">>,CategoryID,<<" - ScrumJet</title>
 <body>
-<a id='task' href='">>,uri:for(#scrumjet_task{id=TaskID}),<<"'>Task ">>,TaskID,<<"</a>
-is in <a id='category' href='">>,uri:for(#scrumjet_category{id=ID}),<<"'>Category ">>,ID,<<"</a>
+<a id='category' href='">>,uri:for(#scrumjet_category{id=CategoryID}),<<"'>Category ">>,CategoryID,<<"</a>
+is on <a id='board' href='">>,uri:for(#scrumjet_board{id=ID}),<<"'>Board ">>,ID,<<"</a>
 </body>
 </html>
 ">>], ReqData, Context}.
@@ -81,8 +81,8 @@ content_types_accepted(ReqData, Context) -> {[{
         X -> X
     end, from_any}], ReqData, Context}.
 
-%% to relate a category and a task you simply assert that the relationship
+%% to relate a board and a category you simply assert that the relationship
 %% exists by PUTting it there
-from_any(ReqData, Context=#context{category_task=CategoryTask}) ->
-    scrumjet_category_task:store(CategoryTask),
+from_any(ReqData, Context=#context{board_category=BoardCategory}) ->
+    scrumjet_board_category:store(BoardCategory),
     {true, ReqData, Context}.

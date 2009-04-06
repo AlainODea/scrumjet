@@ -43,9 +43,15 @@ to_html(ReqData, Context=#context{category=#scrumjet_category{id=ID, name=Name}}
 <body>
 <h1>">>,Name,<<"</h1>
 <h2>Tasks</h2>
-<ul>
+<ul id='tasks'>
 ">>,
-list(ID),
+tasks(ID),
+<<"
+</ul>
+<h2>Boards</h2>
+<ul id='boards'>
+">>,
+boards(ID),
 <<"
 </ul>
 </body>
@@ -63,5 +69,8 @@ from_webform(ReqData, Context=#context{category=Category}) ->
     scrumjet_category:store(Category#scrumjet_category{name=Name}),
     {true, ReqData, Context}.
 
--spec list(string()) -> iolist().
-list(ID) -> lists:foldl(fun html:li/2, [], scrumjet_category_task:find({tasks, ID})).
+-spec tasks(string()) -> iolist().
+tasks(ID) -> lists:foldl(fun html:li/2, [], scrumjet_category_task:find({tasks, ID})).
+
+-spec boards(string()) -> iolist().
+boards(ID) -> lists:foldl(fun html:li/2, [], scrumjet_board_category:find({boards, ID})).

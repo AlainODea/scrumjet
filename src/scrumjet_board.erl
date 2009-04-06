@@ -89,7 +89,7 @@ init_store() ->
     catch
         exit: _ ->
             mnesia:create_table(?MODULE, [{attributes, record_info(fields, ?MODULE)},
-                {type, bag},
+                {type, set},
                 {disc_copies, [node()]}])
     end.
 

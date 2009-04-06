@@ -49,7 +49,8 @@ init([]) ->
     {["categories", '*'], scrumjet_category_resource, []},
     {["category_tasks", '*'], scrumjet_category_task_resource, []},
     {["tasks"], scrumjet_tasks_resource, []},
-    {["tasks", '*'], scrumjet_task_resource, []}
+    {["tasks", '*'], scrumjet_task_resource, []},
+    {["board_categories", '*'], scrumjet_board_category_resource, []}
     ],
     WebConfig = [
 		{ip, Ip},
@@ -67,9 +68,12 @@ init([]) ->
   	    permanent, 5000, worker, [scrumjet_category]},
     CategoryTaskStore = {scrumjet_category_task,
   	    {scrumjet_category_task, start_link, []},
-  	    permanent, 5000, worker, [scrumjet_category]},
+  	    permanent, 5000, worker, [scrumjet_category_task]},
     BoardStore = {scrumjet_board,
  	    {scrumjet_board, start_link, []},
  	    permanent, 5000, worker, [scrumjet_board]},
-    Processes = [Web, TaskStore, CategoryStore, CategoryTaskStore, BoardStore],
+    BoardCategoryStore = {scrumjet_board_category,
+  	    {scrumjet_board_category, start_link, []},
+  	    permanent, 5000, worker, [scrumjet_board_category]},
+    Processes = [Web, TaskStore, CategoryStore, CategoryTaskStore, BoardStore, BoardCategoryStore],
     {ok, {{one_for_one, 10, 10}, Processes}}.

@@ -30,7 +30,7 @@ init([]) -> {ok, #context{}}.
 resource_exists(ReqData, Context) ->
     ID = wrq:disp_path(ReqData),
     case scrumjet_board:find({id, ID}) of
-        [] -> {false, Context#context{board=#scrumjet_board{id=ID}}};
+        [] -> {false, ReqData, Context#context{board=#scrumjet_board{id=ID}}};
         [Board] -> {true, ReqData, Context#context{board=Board}}
     end.
 
@@ -38,13 +38,18 @@ to_html(ReqData, #context{board=#scrumjet_board{id=ID, title=Title}}=Context) ->
     {[<<"<!DOCTYPE html>
 <html>
 <head>
-<title>Board ID: ",ID/binary," - ScrumJet</title>
+<title>Board ID: ">>,ID,<<" - ScrumJet</title>
 <body>
-<h1>",Title/binary," (",ID/binary,")</h1>
-<p>",Title/binary,"</p>
+<h1>">>,Title,<<" (">>,ID,<<")</h1>
+<h2>Categories</h2>
+<ul id='categories'>
+">>,
+categories(ID),
+<<"
+</ul>
 </body>
 </html>
-    ">>], ReqData, Context}.
+">>], ReqData, Context}.
 
 %% should accept PUT requests to create new boards
 allowed_methods(ReqData, Context) -> {['GET', 'HEAD', 'PUT'], ReqData, Context}.
@@ -56,3 +61,6 @@ from_webform(ReqData, Context=#context{board=Board}) ->
     Title = proplists:get_value("title", Params, ""),
     scrumjet_board:store(Board#scrumjet_board{title=Title}),
     {true, ReqData, Context}.
+
+-spec categories(string()) -> iolist().
+categories(ID) -> lists:foldl(fun html:li/2, [], scrumjet_board_category:find({categories, ID})).
