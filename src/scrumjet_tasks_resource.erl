@@ -55,7 +55,7 @@
 
 init([]) -> {ok, #context{}}.
 
-to_html(_ReqProps, State) ->
+to_html(ReqData, Context) ->
     {[<<"<!DOCTYPE html>
 <html>
 <head>
@@ -70,7 +70,7 @@ list(),
 </ul>
 </body>
 </html>
-">>], State}.
+">>], ReqData, Context}.
 
 list() ->
     {atomic, List} = mnesia:transaction(fun() ->

@@ -27,15 +27,14 @@
 
 init([]) -> {ok, #context{}}.
 
-resource_exists(ReqProps, Context) ->
-    ID = list_to_binary(?PATH(ReqProps)),
-    case ets:lookup(scrumjet_board, ID) of
-        [] -> {false, Context};
-        [Board] -> {true, Context#context{board=Board}}
+resource_exists(ReqData, Context) ->
+    ID = wrq:disp_path(ReqData),
+    case scrumjet_board:find({id, ID}) of
+        [] -> {false, Context#context{board=#scrumjet_board{id=ID}}};
+        [Board] -> {true, ReqData, Context#context{board=Board}}
     end.
 
-to_html(_ReqProps, Context) ->
-    #context{board=#scrumjet_board{id=ID, title=Title}} = Context,
+to_html(ReqData, #context{board=#scrumjet_board{id=ID, title=Title}}=Context) ->
     {[<<"<!DOCTYPE html>
 <html>
 <head>
@@ -45,17 +44,15 @@ to_html(_ReqProps, Context) ->
 <p>",Title/binary,"</p>
 </body>
 </html>
-    ">>], Context}.
+    ">>], ReqData, Context}.
 
 %% should accept PUT requests to create new boards
-allowed_methods(_ReqProps, Context) -> {['GET', 'HEAD', 'PUT'], Context}.
+allowed_methods(ReqData, Context) -> {['GET', 'HEAD', 'PUT'], ReqData, Context}.
 
-content_types_accepted(_ReqProps, Context) -> {[{"application/x-www-urlencoded", from_webform}], Context}.
+content_types_accepted(ReqData, Context) -> {[{"application/x-www-urlencoded", from_webform}], ReqData, Context}.
 
-from_webform(ReqProps, Context) ->
-    ID = list_to_binary(?PATH(ReqProps)),
-    Req = ?REQ(ReqProps),
-    Params = Req:parse_qs(),
-    Title = proplists:get_value(title, Params, <<"">>),
-    ets:insert(scrumjet_board, #scrumjet_board{id=ID, title=Title}),
-    {true, Context}.
+from_webform(ReqData, Context=#context{board=Board}) ->
+    Params = mochiweb_util:parse_qs(wrq:req_body(ReqData)),
+    Title = proplists:get_value("title", Params, ""),
+    scrumjet_board:store(Board#scrumjet_board{title=Title}),
+    {true, ReqData, Context}.

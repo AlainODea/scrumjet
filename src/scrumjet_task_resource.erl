@@ -27,36 +27,42 @@
 
 init([]) -> {ok, #context{}}.
 
-resource_exists(ReqProps, Context) ->
-    ID = ?PATH(ReqProps),
+resource_exists(ReqData, Context) ->
+    ID = wrq:disp_path(ReqData),
     case scrumjet_task:find({id, ID}) of
-        [] -> {false, Context};
-        [Task] -> {true, Context#context{task=Task}}
+        [] -> {false, ReqData, Context#context{task=#scrumjet_task{id=ID}}};
+        [Task] -> {true, ReqData, Context#context{task=Task}}
     end.
 
-to_html(_ReqProps, Context=#context{task=#scrumjet_task{id=ID, headline=Headline, description=Description}}) ->
+to_html(ReqData, Context=#context{task=#scrumjet_task{id=ID, headline=Headline, description=Description}}) ->
     {[<<"<!DOCTYPE html>
 <html>
 <head>
 <title>Task ID: ">>,ID,<<" - ScrumJet</title>
 <body>
-<h1>",Headline/binary," (">>,ID,<<")</h1>
-<p>",Description/binary,"</p>
+<h1>">>,Headline,<<" (">>,ID,<<")</h1>
+<p>">>,Description,<<"</p>
+<h2>Categories</h2>
+<ul>
+">>,
+list(ID),
+<<"
+</ul>
 </body>
 </html>
-">>], Context}.
+">>], ReqData, Context}.
 
 %% should accept PUT requests to create new tasks
-allowed_methods(_ReqProps, Context) -> {['GET', 'HEAD', 'PUT'], Context}.
+allowed_methods(ReqData, Context) -> {['GET', 'HEAD', 'PUT'], ReqData, Context}.
 
-content_types_accepted(_ReqProps, Context) -> {[{"application/x-www-urlencoded", from_webform}], Context}.
+content_types_accepted(ReqData, Context) -> {[{"application/x-www-urlencoded", from_webform}], ReqData, Context}.
 
-from_webform(ReqProps, Context) ->
-    ID = ?PATH(ReqProps),
-    Req = ?REQ(ReqProps),
-    Body = Req:recv_body(),
-    Params = mochiweb_util:parse_qs(Body),
+from_webform(ReqData, Context=#context{task=Task}) ->
+    Params = mochiweb_util:parse_qs(wrq:req_body(ReqData)),
     Headline = proplists:get_value("headline", Params, ""),
     Description = proplists:get_value("description", Params, ""),
-    scrumjet_task:store(#scrumjet_task{id=ID, description=list_to_binary(Description), headline=list_to_binary(Headline)}),
-    {true, Context}.
+    scrumjet_task:store(Task#scrumjet_task{description=Description, headline=Headline}),
+    {true, ReqData, Context}.
+
+-spec list(string()) -> iolist().
+list(ID) -> lists:foldl(fun html:li/2, [], scrumjet_category_task:find({categories, ID})).

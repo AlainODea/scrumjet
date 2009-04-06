@@ -18,7 +18,7 @@ start(_Type, _StartArgs) ->
     scrumjet_deps:ensure(),
     scrumjet_sup:start_link().
 
-%% @spec stop(_State) -> ServerRet
+%% @spec stop(_Context) -> ServerRet
 %% @doc application stop callback for scrumjet.
-stop(_State) ->
+stop(_Context) ->
     ok.

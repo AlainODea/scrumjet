@@ -28,45 +28,40 @@
 
 init([]) -> {ok, #context{}}.
 
-resource_exists(ReqProps, Context) ->
-    ID = ?PATH(ReqProps),
-    case ets:lookup(scrumjet_category, ID) of
-        [] -> {false, Context};
-        [Category] -> {true, Context#context{category=Category}}
+resource_exists(ReqData, Context) ->
+    ID = wrq:disp_path(ReqData),
+    case scrumjet_category:find({id, ID}) of
+        [] -> {false, ReqData, Context#context{category=#scrumjet_category{id=ID}}};
+        [Category] -> {true, ReqData, Context#context{category=Category}}
     end.
 
-to_html(_ReqProps, Context=#context{category=#scrumjet_category{id=ID, name=Name}}) ->
+to_html(ReqData, Context=#context{category=#scrumjet_category{id=ID, name=Name}}) ->
     {[<<"<!DOCTYPE html>
 <html>
 <head>
-<title>",Name/binary," - ScrumJet</title>
+<title>Category ID: ">>,ID,<<" - ScrumJet</title>
 <body>
-<h1>",Name/binary,"</h1>
+<h1>">>,Name,<<"</h1>
 <h2>Tasks</h2>
 <ul>
 ">>,
-list(),
+list(ID),
 <<"
 </ul>
 </body>
 </html>
-">>], Context}.
+">>], ReqData, Context}.
 
 %% should accept PUT requests to create new tasks
-allowed_methods(_ReqProps, Context) -> {['GET', 'HEAD', 'PUT'], Context}.
+allowed_methods(ReqData, Context) -> {['GET', 'HEAD', 'PUT'], ReqData, Context}.
 
-content_types_accepted(_ReqProps, Context) -> {[{"application/x-www-urlencoded", from_webform}], Context}.
+content_types_accepted(ReqData, Context) -> {[{"application/x-www-urlencoded", from_webform}], ReqData, Context}.
 
-from_webform(ReqProps, Context) ->
-    ID = ?PATH(ReqProps),
-    Req = ?REQ(ReqProps),
-    Params = Req:parse_qs(),
-    Name = proplists:get_value(name, Params, ""),
-    scrumjet_category:store(#scrumjet_category{id=ID, name=list_to_binary(Name)}),
-    {true, Context}.
+from_webform(ReqData, Context=#context{category=Category}) ->
+    Params = mochiweb_util:parse_qs(wrq:req_body(ReqData)),
+    Name = proplists:get_value("name", Params, ""),
+    scrumjet_category:store(Category#scrumjet_category{name=Name}),
+    {true, ReqData, Context}.
 
-list() ->
-    {atomic, List} = mnesia:transaction(fun() ->
-        mnesia:foldl(fun html:li/2, [], scrumjet_task)
-    end),
-    List.
+-spec list(string()) -> iolist().
+list(ID) -> lists:foldl(fun html:li/2, [], scrumjet_category_task:find({tasks, ID})).

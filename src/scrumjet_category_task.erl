@@ -1,4 +1,6 @@
--module(scrumjet_task).
+%% TODO: how do I represent the paired category task resource in a URI
+%% Propose: category_tasks/<id>;<task_id> in accordance with multi-dimension URI design
+-module(scrumjet_category_task).
 
 -behaviour(gen_server).
 
@@ -34,7 +36,6 @@ shutdown() ->
 
 init([]) ->
     process_flag(trap_exit, true),
-    io:format("~p (~p) starting...~n", [?MODULE, self()]),
     init_store(),
     {ok, #state{}}.
 
@@ -48,7 +49,6 @@ handle_call({retrieve, Params}, _From, Context) ->
 
 handle_call(stop, _From, Context) ->
     mnesia:stop(),
-    io:format("Shutting down...~n"),
     {stop, normal, Context};
 
 handle_call(_Request, _From, Context) ->
@@ -69,25 +69,50 @@ code_change(_OldVsn, Context, _Extra) ->
 %% Internal functions
 insert(Record=#?MODULE{}) ->
     F = fun() ->
-        Now = erlang:now(),
-        mnesia:write(Record#?MODULE{ctime=Now, mtime=Now})
+        mnesia:write(Record)
     end,
     mnesia:transaction(F).
 
-retrieve({id, Id}) ->
+retrieve({id, Id, TaskId}) ->
     F = fun() ->
         Query = qlc:q([M || M <- mnesia:table(?MODULE),
-                  M#?MODULE.id =:= Id]),
+                  M#?MODULE.id =:= Id,
+                  M#?MODULE.task_id =:= TaskId]),
+        qlc:eval(Query)
+    end,
+    {atomic, Records} = mnesia:transaction(F),
+    Records;
+retrieve({tasks, Id}) ->
+    F = fun() ->
+        Query = qlc:q([Task ||
+                    Join <- mnesia:table(?MODULE),
+                    Task <- mnesia:table(scrumjet_task),
+                    Join#?MODULE.id =:= Id,
+                    Task#scrumjet_task.id =:= Join#scrumjet_category_task.task_id]),
+        qlc:eval(Query)
+    end,
+    {atomic, Records} = mnesia:transaction(F),
+    Records;
+retrieve({categories, Id}) ->
+    F = fun() ->
+        Query = qlc:q([Category ||
+                    Join <- mnesia:table(?MODULE),
+                    Category <- mnesia:table(scrumjet_category),
+                    Join#?MODULE.task_id =:= Id,
+                    Category#scrumjet_task.id =:= Join#scrumjet_category_task.id]),
         qlc:eval(Query)
     end,
     {atomic, Records} = mnesia:transaction(F),
     Records.
 
 init_store() ->
+    mnesia:start(),
     try
         mnesia:table_info(?MODULE, type)
     catch
         exit: _ ->
             mnesia:create_table(?MODULE, [{attributes, record_info(fields, ?MODULE)},
+                {type, bag},
                 {disc_copies, [node()]}])
     end.
+

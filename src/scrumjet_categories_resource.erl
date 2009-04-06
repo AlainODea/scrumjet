@@ -10,7 +10,7 @@
 
 init([]) -> {ok, undefined}.
 
-to_html(_ReqProps, State) ->
+to_html(ReqData, Context) ->
     {[<<"<!DOCTYPE html>
 <html>
 <head>
@@ -20,9 +20,15 @@ to_html(_ReqProps, State) ->
 <h1>ScrumJet Categories</h1>
 <ul>
 ">>,
-ets:foldl(fun html:li/2, [], scrumjet_category),
+list(),
 <<"
 </ul>
 </body>
 </html>
-">>], State}.
+">>], ReqData, Context}.
+
+list() ->
+    {atomic, List} = mnesia:transaction(fun() ->
+        mnesia:foldl(fun html:li/2, [], scrumjet_category)
+    end),
+    List.

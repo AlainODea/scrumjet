@@ -37,32 +37,32 @@ init([]) ->
     init_store(),
     {ok, #state{}}.
 
-handle_call({insert, Record=#?MODULE{}}, _From, State) ->
+handle_call({insert, Record=#?MODULE{}}, _From, Context) ->
     insert(Record),
-    {reply, ok, State};
+    {reply, ok, Context};
 
-handle_call({retrieve, Params}, _From, State) ->
+handle_call({retrieve, Params}, _From, Context) ->
     Records = retrieve(Params),
-    {reply, {ok, Records}, State};
+    {reply, {ok, Records}, Context};
 
-handle_call(stop, _From, State) ->
+handle_call(stop, _From, Context) ->
     mnesia:stop(),
-    {stop, normal, State};
+    {stop, normal, Context};
 
-handle_call(_Request, _From, State) ->
-    {reply, ignored_message, State}.
+handle_call(_Request, _From, Context) ->
+    {reply, ignored_message, Context}.
 
-handle_cast(_Msg, State) ->
-    {noreply, State}.
+handle_cast(_Msg, Context) ->
+    {noreply, Context}.
 
-handle_info(_Info, State) ->
-    {noreply, State}.
+handle_info(_Info, Context) ->
+    {noreply, Context}.
 
-terminate(_Reason, _State) ->
+terminate(_Reason, _Context) ->
     ok.
 
-code_change(_OldVsn, State, _Extra) ->
-    {ok, State}.
+code_change(_OldVsn, Context, _Extra) ->
+    {ok, Context}.
 
 %% Internal functions
 insert(Record=#?MODULE{}) ->

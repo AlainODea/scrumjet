@@ -10,7 +10,7 @@
 
 init([]) -> {ok, undefined}.
 
-to_html(_ReqProps, State) ->
+to_html(ReqData, Context) ->
     {<<"<!DOCTYPE html>
 <html>
 <head>
@@ -25,4 +25,4 @@ to_html(_ReqProps, State) ->
 </ul>
 </body>
 </html>
-">>, State}.
+">>, ReqData, Context}.
