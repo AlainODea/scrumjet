@@ -4,7 +4,9 @@
 
 -module(scrumjet_boards_resource).
 -author('Alain O\'Dea <alain.odea@gmail.com>').
--export([init/1, to_html/2]).
+-export([init/1]).
+%% representation generators
+-export([to_html/2]).
 
 -include_lib("webmachine/include/webmachine.hrl").
 
@@ -25,7 +27,7 @@ boards(),
 </ul>
 </body>
 </html>
-    ">>], ReqData, Context}.
+">>], ReqData, Context}.
 
 -spec boards() -> iolist().
 boards() ->

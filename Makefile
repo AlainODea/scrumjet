@@ -11,7 +11,7 @@ erl:
 docs:
 	@erl -noshell -run edoc_run application '$(APP)' '"."' '[]'
 
-clean: 
+clean:
 	@echo "removing:"
 	@rm -fv ebin/*.beam ebin/*.app
 

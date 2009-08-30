@@ -23,7 +23,8 @@ happy_path_test_() ->
 
 happy_path_generator(_Pid) ->
     {timeout, 1, [
-        fun() -> scrumjet_category:store(#scrumjet_category{id="family", name="Family Stuff"}) end,
+        fun() -> scrumjet_category:store(
+            #scrumjet_category{id="family", name="Family Stuff"}) end,
         fun() -> scrumjet_category:find({id,"family"}) end
     ]}.
 
@@ -39,8 +40,10 @@ verify_happy_path_test_() ->
 
 verify_happy_path_generator(_Pid) ->
     {timeout, 1, [
-        ?_assertEqual(ok, scrumjet_category:store(#scrumjet_category{id="family", name="Family Stuff"})),
-        ?_assertMatch([#scrumjet_category{id="family", name="Family Stuff"}], scrumjet_category:find({id,"family"}))
+        ?_assertEqual(ok, scrumjet_category:store(
+            #scrumjet_category{id="family", name="Family Stuff"})),
+        ?_assertMatch([#scrumjet_category{id="family", name="Family Stuff"}],
+            scrumjet_category:find({id,"family"}))
     ]}.
 
 % 3. Verify Alternate Paths
@@ -57,15 +60,19 @@ verify_alternate_generator(_Pid) ->
     {timeout, 1, [
         ?_assertMatch([], scrumjet_category:find({id,"family"})),
         ?_assertMatch([], scrumjet_category:find({id,"work"})),
-        ?_assertEqual(ok, scrumjet_category:store(#scrumjet_category{id="family", name="Family Stuff"})),
-        ?_assertEqual(ok, scrumjet_category:store(#scrumjet_category{id="work", name="Work"})),
-        ?_assertMatch([#scrumjet_category{id="family", name="Family Stuff"}], scrumjet_category:find({id,"family"})),
-        ?_assertMatch([#scrumjet_category{id="work", name="Work"}], scrumjet_category:find({id,"work"}))
+        ?_assertEqual(ok, scrumjet_category:store(
+            #scrumjet_category{id="family", name="Family Stuff"})),
+        ?_assertEqual(ok, scrumjet_category:store(
+            #scrumjet_category{id="work", name="Work"})),
+        ?_assertMatch([#scrumjet_category{id="family", name="Family Stuff"}],
+            scrumjet_category:find({id,"family"})),
+        ?_assertMatch([#scrumjet_category{id="work", name="Work"}],
+            scrumjet_category:find({id,"work"}))
     ]}.
 
 % 4. Control Indirect Inputs of SUT via Test Stub
 %    - Verify indirect outputs
-%    - Use Mock Objects or Test Spys to intercept and verify outgoing method calls
+%    - Use Mock Objects or Test Spys to intercept and verify outgoing calls
 
 % 5. Optimize Execution & Maintainability
 %    - Make the tests run faster

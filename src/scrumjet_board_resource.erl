@@ -5,20 +5,14 @@
 -module(scrumjet_board_resource).
 -author('Alain O\'Dea <alain.odea@gmail.com>').
 -export([init/1]).
--export([to_html/2,
-         allowed_methods/2,
-    	 resource_exists/2,
-         % last_modified/2,
-         % content_types_provided/2,
-         content_types_accepted/2,
-         from_webform/2
-         % delete_resource/2,
-         % post_is_create/2,
-         % create_path/2,
-         % provide_content/2,
-         % accept_content/2,
-         % generate_etag/2
-    	 ]).
+%% resource functions
+-export([allowed_methods/2,
+         resource_exists/2,
+         content_types_accepted/2]).
+%% representation generators
+-export([to_html/2]).
+%% representation parsers
+-export([from_webform/2]).
 
 -record(context, {board}).
 
@@ -54,7 +48,8 @@ categories(ID),
 %% should accept PUT requests to create new boards
 allowed_methods(ReqData, Context) -> {['GET', 'HEAD', 'PUT'], ReqData, Context}.
 
-content_types_accepted(ReqData, Context) -> {[{"application/x-www-urlencoded", from_webform}], ReqData, Context}.
+content_types_accepted(ReqData, Context) ->
+    {[{"application/x-www-urlencoded", from_webform}], ReqData, Context}.
 
 from_webform(ReqData, Context=#context{board=Board}) ->
     Params = mochiweb_util:parse_qs(wrq:req_body(ReqData)),
@@ -63,4 +58,6 @@ from_webform(ReqData, Context=#context{board=Board}) ->
     {true, ReqData, Context}.
 
 -spec categories(string()) -> iolist().
-categories(ID) -> lists:foldl(fun html:li/2, [], scrumjet_board_category:find({categories, ID})).
+categories(ID) ->
+    lists:foldl(fun html:li/2, [],
+        scrumjet_board_category:find({categories, ID})).

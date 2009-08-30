@@ -1,6 +1,6 @@
 %% @author Alain O'Dea <alain.odea@gmail.com>
 %% @copyright 2009 Alain O'Dea.
-%% @doc ScrumJet Category-Task Relationship Storage Server.
+%% @doc ScrumJet Category-Task relationship storage server.
 
 -module(scrumjet_category_task).
 
@@ -113,7 +113,8 @@ init_store() ->
         mnesia:table_info(?MODULE, type)
     catch
         exit: _ ->
-            mnesia:create_table(?MODULE, [{attributes, record_info(fields, ?MODULE)},
+            mnesia:create_table(?MODULE,
+                [{attributes, record_info(fields, ?MODULE)},
                 {type, bag},
                 {disc_copies, [node()]}])
     end.
