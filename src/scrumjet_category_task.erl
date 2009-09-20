@@ -110,10 +110,10 @@ retrieve({categories, Id}) ->
 init_store() ->
     mnesia:start(),
     try
-        mnesia:table_info(?MODULE, type)
+        {atomic, ok} = mnesia:table_info(?MODULE, type)
     catch
         exit: _ ->
-            mnesia:create_table(?MODULE,
+            {atomic, ok} = mnesia:create_table(?MODULE,
                 [{attributes, record_info(fields, ?MODULE)},
                 {type, bag},
                 {disc_copies, [node()]}])

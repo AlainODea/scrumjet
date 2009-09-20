@@ -21,6 +21,8 @@ start() ->
     scrumjet_deps:ensure(),
     ensure_started(crypto),
     ensure_started(webmachine),
+    mnesia:create_schema([node()]),
+    ensure_started(mnesia),
     application:start(scrumjet).
 
 %% @spec stop() -> ok
@@ -29,4 +31,5 @@ stop() ->
     Res = application:stop(scrumjet),
     application:stop(webmachine),
     application:stop(crypto),
+    application:stop(mnesia),
     Res.
