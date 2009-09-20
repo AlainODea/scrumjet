@@ -110,9 +110,9 @@ retrieve({boards, Id}) ->
 init_store() ->
     mnesia:start(),
     try
-        {atomic, ok} = mnesia:table_info(?MODULE, type)
+        bag = mnesia:table_info(?MODULE, type)
     catch
-        exit: _ ->
+        exit:{aborted, {no_exists, ?MODULE, type}} ->
             {atomic, ok} = mnesia:create_table(?MODULE,
                 [{attributes, record_info(fields, ?MODULE)},
                 {type, bag},

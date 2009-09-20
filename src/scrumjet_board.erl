@@ -85,9 +85,9 @@ retrieve({id, Id}) ->
 
 init_store() ->
     try
-        {atomic, ok} = mnesia:table_info(?MODULE, type)
+        set = mnesia:table_info(?MODULE, type)
     catch
-        exit: _ ->
+        exit:{aborted, {no_exists, ?MODULE, type}} ->
             {atomic, ok} = mnesia:create_table(?MODULE,
                 [{attributes, record_info(fields, ?MODULE)},
                 {type, set},
