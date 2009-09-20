@@ -4,6 +4,10 @@ ScrumJet's experimental premise is simple: I wanted to learn more about webmachi
 
 h2. Running the Experiment
 
+Pre-requisitites:
+* Mercurial (to get webmachine)
+* Erlang/OTP
+
 Shell 1:
 <pre>
 make
