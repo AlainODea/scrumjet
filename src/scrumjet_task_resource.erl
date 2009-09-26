@@ -32,9 +32,13 @@ to_html(ReqData, Context=#context{task=#scrumjet_task{id=ID,
 <html>
 <head>
 <title>Task ID: ">>,ID,<<" - ScrumJet</title>
-<body>
-<h1>">>,Headline,<<" (">>,ID,<<")</h1>
-<p>">>,Description,<<"</p>
+<link rel='stylesheet' type='text/css' href='http://ajax.googleapis.com/ajax/libs/dojo/1.3.2/dijit/themes/tundra/tundra.css'>
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/dojo/1.3.2/dojo/dojo.xd.js'></script>
+<script type='text/javascript' src='/static/task.js'></script>
+</head>
+<body style='display:none'>
+<h1 id='headline'>">>,Headline,<<" (">>,ID,<<")</h1>
+<p id='description'>">>,Description,<<"</p>
 <h2>Categories</h2>
 <ul id='categories'>
 ">>,
