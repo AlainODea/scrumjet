@@ -26,3 +26,5 @@
 -record(scrumjet_board_category, {
     id :: string(),
     category_id :: string()}).
+
+-type sj_record() :: #scrumjet_task{}|#scrumjet_category{}|#scrumjet_board{}.

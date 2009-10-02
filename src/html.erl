@@ -1,9 +1,8 @@
 -module(html).
 
 -include("scrumjet.hrl").
--export([li/2, to_entities/1]).
+-export([li/2, to_entities/1, head/0]).
 
--type sj_record() :: #scrumjet_task{}|#scrumjet_category{}|#scrumjet_board{}.
 -spec li(sj_record(), [iolist()]) -> iolist().
 li(R=#scrumjet_task{id=ID, headline=L}, Items) -> li_("task", R, L, ID, Items);
 li(R=#scrumjet_category{id=ID, name=L}, Items) -> li_("category", R, L, ID, Items);
@@ -29,3 +28,13 @@ to_entities([$"|Xml]) -> ["&quot;"|to_entities(Xml)];
 to_entities([$'|Xml]) -> ["&#x27;"|to_entities(Xml)];
 to_entities([$/|Xml]) -> ["&#x2F;"|to_entities(Xml)];
 to_entities([Char|Xml]) -> [Char|to_entities(Xml)].
+
+head() ->
+    <<"
+<link rel='stylesheet' type='text/css' href='http://ajax.googleapis.com/ajax/libs/dojo/1.3.2/dijit/themes/tundra/tundra.css'>
+<style type='text/css'>
+@import url('http://ajax.googleapis.com/ajax/libs/dojo/1.3.2/dojox/grid/resources/Grid.css');
+@import url('http://ajax.googleapis.com/ajax/libs/dojo/1.3.2/dojox/grid/resources/tundraGrid.css');
+</style>
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/dojo/1.3.2/dojo/dojo.xd.js'></script>
+<script type='text/javascript' src='/static/task.js'></script>">>.

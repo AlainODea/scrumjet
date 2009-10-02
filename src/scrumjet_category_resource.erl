@@ -45,8 +45,7 @@ tasks(ID),
 <<"
 </ul>
 <h2>Boards</h2>
-<ul id='boards'>
-">>,
+<ul id='boards'>">>,
 boards(ID),
 <<"
 </ul>

@@ -36,8 +36,7 @@ to_html(ReqData, #context{board=#scrumjet_board{id=ID, title=Title}}=Context) ->
 <body>
 <h1>">>,Title,<<" (">>,ID,<<")</h1>
 <h2>Categories</h2>
-<ul id='categories'>
-">>,
+<ul id='categories'>">>,
 categories(ID),
 <<"
 </ul>
