@@ -5,19 +5,32 @@
 -module(scrumjet_task_resource).
 -author('Alain O\'Dea <alain.odea@gmail.com>').
 -export([init/1]).
--export([to_html/2,
-         allowed_methods/2,
-         resource_exists/2,
-         content_types_accepted/2,
-         from_webform/2
-         ]).
 
--record(context, {task}).
+%% webmachine resource functions
+-export([
+    allowed_methods/2,
+    resource_exists/2,
+    content_types_accepted/2,
+    content_types_provided/2
+    ]).
+
+%% content generators
+-export([
+    to_html/2,
+    to_json/2,
+    from_webform/2
+    ]).
 
 -include("scrumjet.hrl").
 -include_lib("webmachine/include/webmachine.hrl").
 
+-record(context, {task :: #scrumjet_task{}}).
+
 init([]) -> {ok, #context{}}.
+
+content_types_provided(ReqData, Context) ->
+    {[{"text/html", to_html}, {"application/json", to_json}],
+        ReqData, Context}.
 
 resource_exists(ReqData, Context) ->
     ID = wrq:disp_path(ReqData),
@@ -46,6 +59,9 @@ categories(ID),
 </body>
 </html>
 ">>], ReqData, Context}.
+
+to_json(ReqData, Context=#context{task=Task}) ->
+    {mochijson2:encode(json:value(Task)), ReqData, Context}.
 
 %% should accept PUT requests to create new tasks
 allowed_methods(ReqData, Context) -> {['GET', 'HEAD', 'PUT'], ReqData, Context}.
