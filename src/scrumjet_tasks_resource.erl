@@ -29,10 +29,15 @@ init([]) -> {ok, #context{}}.
 
 malformed_request(ReqData, Context) ->
     try
-        Range = range(wrq:get_req_header("Range", ReqData)),
-        invalid_range(Range, ReqData, Context)
-    catch
-        _:_ -> {true, ReqData, Context}
+        case range(wrq:get_req_header("Range", ReqData)) of
+            undefined ->
+                QRange = query_range(wrq:get_qs_value("start", ReqData),
+                    wrq:get_qs_value("end", ReqData)),
+                invalid_range(QRange, ReqData, Context);
+            Range -> invalid_range(Range, ReqData, Context)
+        end
+    catch _:_ ->
+        {true, ReqData, Context}
     end.
 
 invalid_range({Start, End}, ReqData, Context) when Start > End ->
@@ -98,3 +103,10 @@ range(undefined) -> undefined.
 tasks(Start, End) ->
     scrumjet_task:range(Start, End).
 
+-spec query_range(string(), string()) -> {integer(), integer()}.
+query_range(undefined, _) -> undefined;
+query_range(_, undefined) -> undefined;
+query_range(StartQ, EndQ) ->
+    {Start, []} = string:to_integer(StartQ),
+    {End, []} = string:to_integer(EndQ),
+    {Start, End}.
