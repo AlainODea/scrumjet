@@ -46,7 +46,7 @@ to_html(ReqData, Context=#context{task=#scrumjet_task{id=ID,
 <head>
 <title>Task ID: ">>,ID,<<" - ScrumJet</title>">>,
 html:head(),
-<<"
+<<"<script type='text/javascript' src='/static/task.js'></script>
 </head>
 <body style='display:none'>
 <h1 id='headline'>">>,Headline,<<" (">>,ID,<<")</h1>

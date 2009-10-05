@@ -62,7 +62,7 @@ init([]) ->
         {webmachine_mochiweb, start, [WebConfig]},
         permanent, 5000, worker, dynamic},
     Stores = [{S,{S,start_link,[]},permanent,5000,worker,[S]}
-             || S <- [scrumjet_task, scrumjet_category, scrumjet_category_task,
+             || S <- [scrumjet_category, scrumjet_category_task,
                       scrumjet_board, scrumjet_board_category]],
     Processes = [Web|Stores],
     {ok, {{one_for_one, 10, 10}, Processes}}.

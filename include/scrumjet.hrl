@@ -4,20 +4,20 @@
     id :: string(),
     mtime :: time(),
     ctime :: time(),
-    headline :: string(),
-    description :: string()}).
+    headline :: binary(),
+    description :: binary()}).
 
 -record(scrumjet_board, {
     id :: string(),
     mtime :: time(),
     ctime :: time(),
-    title :: string()}).
+    title :: binary()}).
 
 -record(scrumjet_category, {
     id :: string(),
     mtime :: time(),
     ctime :: time(),
-    name :: string()}).
+    name :: binary()}).
 
 -record(scrumjet_category_task, {
     id :: string(),

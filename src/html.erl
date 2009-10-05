@@ -37,4 +37,4 @@ head() ->
 @import url('http://ajax.googleapis.com/ajax/libs/dojo/1.3.2/dojox/grid/resources/tundraGrid.css');
 </style>
 <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/dojo/1.3.2/dojo/dojo.xd.js'></script>
-<script type='text/javascript' src='/static/task.js'></script>">>.
+">>.
