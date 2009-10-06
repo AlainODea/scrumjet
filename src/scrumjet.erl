@@ -24,6 +24,8 @@ start() ->
     mnesia:create_schema([node()]),
     ensure_started(mnesia),
     scrumjet_task:start(),
+    scrumjet_category:start(),
+    scrumjet_board:start(),
     application:start(scrumjet).
 
 %% @spec stop() -> ok
