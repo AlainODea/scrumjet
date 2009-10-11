@@ -73,16 +73,6 @@ content_types_provided(ReqData, Context) ->
     {[{CT, provide_content}], ReqData,
      Context#context{metadata=[{'content-type', CT}|Context#context.metadata]}}.
 
-create_path(ReqData, Context) ->
-    case wrq:get_req_header("slug", ReqData) of
-        undefined -> {undefined, ReqData, Context};
-        Slug ->
-            case file_exists(Context, Slug) of
-                {true, _} -> {undefined, ReqData, Context};
-                _ -> {Slug, ReqData, Context}
-            end
-    end.
-
 provide_content(ReqData, Context) ->
     case maybe_fetch_object(Context, wrq:disp_path(ReqData)) of
     {true, NewContext} ->

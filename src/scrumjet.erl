@@ -26,6 +26,8 @@ start() ->
     scrumjet_task:start(),
     scrumjet_category:start(),
     scrumjet_board:start(),
+    scrumjet_category_task:start(),
+    scrumjet_board_category:start(),
     application:start(scrumjet).
 
 %% @spec stop() -> ok
