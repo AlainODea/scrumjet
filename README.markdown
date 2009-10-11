@@ -34,7 +34,7 @@ Overall Architecture
 
 ScrumJet is broken out into _resources_ for _tasks_, _categories_, _boards_ and utility resources for representing linkages amongst them.  Much of the motivation for this architecture came from reading [O'Reilly's book RESTful Web Services] [3].  As such it focuses on providing a well-connected HTML representation of each resource.  I am likely to eventually add [JSON] [7] representations to the resources for efficiency, but my goal at the moment is a proper RESTful architecture.  I find it easier to achieve that in HTML.
 
-Part of the motivation for this architecture is a secondary educational goal of learning how to build an ARIA on top of a RESTful web service using [Dojo] [5].  Obviously [Dojo] [5] prefers [JSON] [7] so when I get ScrumJet to that point I will certainly want the resources to be able to represent themselves as [JSON] [7].
+Part of the motivation for this architecture is a secondary educational goal of learning how to build an ARIA on top of a RESTful web service using [Dojo] [5].  Obviously [Dojo] [5] prefers [JSON] [7] so some ScrumJet resources are also able to represent themselves as [JSON] [7].  It is an end-goal that all resources in ScrumJet will be able to do this.
 
 ### Underlying Architecture
 
