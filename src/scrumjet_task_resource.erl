@@ -34,7 +34,7 @@ content_types_provided(ReqData, Context) ->
 
 resource_exists(ReqData, Context) ->
     ID = wrq:disp_path(ReqData),
-    case scrumjet_task:find({id, ID}) of
+    case scrumjet_datastore:find(scrumjet_task, {id, ID}) of
         [] -> {false, ReqData, Context#context{task=#scrumjet_task{id=ID}}};
         [Task] -> {true, ReqData, Context#context{task=Task}}
     end.
@@ -73,8 +73,9 @@ from_webform(ReqData, Context=#context{task=Task}) ->
     Params = mochiweb_util:parse_qs(wrq:req_body(ReqData)),
     Headline = proplists:get_value("headline", Params, ""),
     Description = proplists:get_value("description", Params, ""),
-    scrumjet_task:store(Task#scrumjet_task{description=Description,
-                                           headline=Headline}),
+    scrumjet_datastore:store(
+        Task#scrumjet_task{description=Description,
+                           headline=Headline}),
     {true, ReqData, Context}.
 
 -spec categories(string()) -> iolist().

@@ -1,2 +1,0 @@
--module(scrumjet_category).
--include("scrumjet_datastore.hrl").

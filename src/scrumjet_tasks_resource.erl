@@ -101,7 +101,7 @@ range(undefined) -> undefined.
 
 -spec tasks(integer(), integer) -> [sj_record()].
 tasks(Start, End) ->
-    scrumjet_task:range(Start, End).
+    scrumjet_datastore:range(scrumjet_task, Start, End).
 
 -spec query_range(string(), string()) -> {integer(), integer()}.
 query_range(undefined, _) -> undefined;

@@ -23,7 +23,7 @@ init([]) -> {ok, #context{}}.
 
 resource_exists(ReqData, Context) ->
     ID = wrq:disp_path(ReqData),
-    case scrumjet_board:find({id, ID}) of
+    case scrumjet_datastore:find(scrumjet_board, {id, ID}) of
         [] -> {false, ReqData, Context#context{board=#scrumjet_board{id=ID}}};
         [Board] -> {true, ReqData, Context#context{board=Board}}
     end.
@@ -53,7 +53,7 @@ content_types_accepted(ReqData, Context) ->
 from_webform(ReqData, Context=#context{board=Board}) ->
     Params = mochiweb_util:parse_qs(wrq:req_body(ReqData)),
     Title = proplists:get_value("title", Params, ""),
-    scrumjet_board:store(Board#scrumjet_board{title=Title}),
+    scrumjet_datastore:store(Board#scrumjet_board{title=Title}),
     {true, ReqData, Context}.
 
 -spec categories(string()) -> iolist().

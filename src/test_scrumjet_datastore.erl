@@ -1,4 +1,4 @@
--module(test_scrumjet_category).
+-module(test_scrumjet_datastore).
 
 -include_lib("eunit/include/eunit.hrl").
 -include("scrumjet.hrl").
@@ -10,9 +10,9 @@ setup() ->
     mnesia:stop(),
     mnesia:delete_schema([node()]),
     mnesia:create_schema([node()]),
-    scrumjet_category:start_link().
+    scrumjet_datastore:start().
 
-cleanup(_Pid) -> catch scrumjet_category:shutdown().
+cleanup(_Pid) -> ok.
 
 happy_path_test_() ->
     {setup,
@@ -23,9 +23,9 @@ happy_path_test_() ->
 
 happy_path_generator(_Pid) ->
     {timeout, 1, [
-        fun() -> scrumjet_category:store(
+        fun() -> scrumjet_datastore:store(
             #scrumjet_category{id="family", name="Family Stuff"}) end,
-        fun() -> scrumjet_category:find({id,"family"}) end
+        fun() -> scrumjet_datastore:find(scrumjet_category, {id,"family"}) end
     ]}.
 
 % 2. Verify direct outputs of happy path
@@ -40,10 +40,10 @@ verify_happy_path_test_() ->
 
 verify_happy_path_generator(_Pid) ->
     {timeout, 1, [
-        ?_assertEqual(ok, scrumjet_category:store(
+        ?_assertEqual(ok, scrumjet_datastore:store(
             #scrumjet_category{id="family", name="Family Stuff"})),
         ?_assertMatch([#scrumjet_category{id="family", name="Family Stuff"}],
-            scrumjet_category:find({id,"family"}))
+            scrumjet_datastore:find(scrumjet_category, {id,"family"}))
     ]}.
 
 % 3. Verify Alternate Paths
@@ -58,16 +58,16 @@ verify_alternate_test_() ->
 
 verify_alternate_generator(_Pid) ->
     {timeout, 1, [
-        ?_assertMatch([], scrumjet_category:find({id,"family"})),
-        ?_assertMatch([], scrumjet_category:find({id,"work"})),
-        ?_assertEqual(ok, scrumjet_category:store(
+        ?_assertMatch([], scrumjet_datastore:find(scrumjet_category, {id,"family"})),
+        ?_assertMatch([], scrumjet_datastore:find(scrumjet_category, {id,"work"})),
+        ?_assertEqual(ok, scrumjet_datastore:store(
             #scrumjet_category{id="family", name="Family Stuff"})),
-        ?_assertEqual(ok, scrumjet_category:store(
+        ?_assertEqual(ok, scrumjet_datastore:store(
             #scrumjet_category{id="work", name="Work"})),
         ?_assertMatch([#scrumjet_category{id="family", name="Family Stuff"}],
-            scrumjet_category:find({id,"family"})),
+            scrumjet_datastore:find(scrumjet_category, {id,"family"})),
         ?_assertMatch([#scrumjet_category{id="work", name="Work"}],
-            scrumjet_category:find({id,"work"}))
+            scrumjet_datastore:find(scrumjet_category, {id,"work"}))
     ]}.
 
 % 4. Control Indirect Inputs of SUT via Test Stub
