@@ -25,7 +25,7 @@ happy_path_generator(_Pid) ->
     {timeout, 1, [
         fun() -> scrumjet_datastore:store(
             #scrumjet_category{id="family", name="Family Stuff"}) end,
-        fun() -> scrumjet_datastore:find(scrumjet_category, {id,"family"}) end
+        fun() -> scrumjet_datastore:find(#scrumjet_category{id="family"}) end
     ]}.
 
 % 2. Verify direct outputs of happy path
@@ -43,7 +43,7 @@ verify_happy_path_generator(_Pid) ->
         ?_assertEqual(ok, scrumjet_datastore:store(
             #scrumjet_category{id="family", name="Family Stuff"})),
         ?_assertMatch([#scrumjet_category{id="family", name="Family Stuff"}],
-            scrumjet_datastore:find(scrumjet_category, {id,"family"}))
+            scrumjet_datastore:find(#scrumjet_category{id="family"}))
     ]}.
 
 % 3. Verify Alternate Paths
@@ -58,16 +58,20 @@ verify_alternate_test_() ->
 
 verify_alternate_generator(_Pid) ->
     {timeout, 1, [
-        ?_assertMatch([], scrumjet_datastore:find(scrumjet_category, {id,"family"})),
-        ?_assertMatch([], scrumjet_datastore:find(scrumjet_category, {id,"work"})),
+        ?_assertMatch([], scrumjet_datastore:find(
+            #scrumjet_category{id="family"})),
+        ?_assertMatch([], scrumjet_datastore:find(
+            #scrumjet_category{id="work"})),
         ?_assertEqual(ok, scrumjet_datastore:store(
             #scrumjet_category{id="family", name="Family Stuff"})),
         ?_assertEqual(ok, scrumjet_datastore:store(
             #scrumjet_category{id="work", name="Work"})),
         ?_assertMatch([#scrumjet_category{id="family", name="Family Stuff"}],
-            scrumjet_datastore:find(scrumjet_category, {id,"family"})),
+            scrumjet_datastore:find(
+                #scrumjet_category{id="family"})),
         ?_assertMatch([#scrumjet_category{id="work", name="Work"}],
-            scrumjet_datastore:find(scrumjet_category, {id,"work"}))
+            scrumjet_datastore:find(
+                #scrumjet_category{id="work"}))
     ]}.
 
 % 4. Control Indirect Inputs of SUT via Test Stub

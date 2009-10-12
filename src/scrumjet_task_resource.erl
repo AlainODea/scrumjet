@@ -34,7 +34,7 @@ content_types_provided(ReqData, Context) ->
 
 resource_exists(ReqData, Context) ->
     ID = wrq:disp_path(ReqData),
-    case scrumjet_datastore:find(scrumjet_task, {id, ID}) of
+    case scrumjet_datastore:find(#scrumjet_task{id=ID}) of
         [] -> {false, ReqData, Context#context{task=#scrumjet_task{id=ID}}};
         [Task] -> {true, ReqData, Context#context{task=Task}}
     end.

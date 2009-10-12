@@ -24,7 +24,7 @@ init([]) -> {ok, #context{}}.
 
 resource_exists(ReqData, Context) ->
     ID = wrq:disp_path(ReqData),
-    case scrumjet_datastore:find(scrumjet_category, {id, ID}) of
+    case scrumjet_datastore:find(#scrumjet_category{id=ID}) of
         [] -> {false, ReqData, Context#context{category=
                #scrumjet_category{id=ID}}};
         [Category] -> {true, ReqData, Context#context{category=Category}}

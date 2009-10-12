@@ -3,7 +3,7 @@
 -include("scrumjet.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 
--export([start/0, store/1, find/2, range/3]).
+-export([start/0, store/1, find/1, range/3]).
 
 -define (TYPES, [scrumjet_task, scrumjet_category, scrumjet_board]).
 
@@ -32,13 +32,13 @@ prestore(Record=#scrumjet_board{}) ->
     Now = erlang:now(),
     Record#scrumjet_board{mtime=Now}.
 
-select(scrumjet_task, {id, Id}) ->
+select(#scrumjet_task{id=Id}) ->
     qlc:q([M || M <- mnesia:table(scrumjet_task),
                 M#scrumjet_task.id =:= Id]);
-select(scrumjet_category, {id, Id}) ->
+select(#scrumjet_category{id=Id}) ->
     qlc:q([M || M <- mnesia:table(scrumjet_category),
                 M#scrumjet_category.id =:= Id]);
-select(scrumjet_board, {id, Id}) ->
+select(#scrumjet_board{id=Id}) ->
     qlc:q([M || M <- mnesia:table(scrumjet_board),
                 M#scrumjet_board.id =:= Id]).
 
@@ -63,9 +63,9 @@ store(Record) ->
     end,
     mnesia:transaction(F).
 
-find(Type, Params) ->
+find(Params) ->
     F = fun() ->
-        Query = select(Type, Params),
+        Query = select(Params),
         qlc:eval(Query)
     end,
     {atomic, Records} = mnesia:transaction(F),
