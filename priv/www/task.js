@@ -24,13 +24,6 @@ dojo.addOnLoad(function() {
     });
     tabContainer.addChild(taskTab);
 
-    var categoriesTab = new dijit.layout.ContentPane({
-        title: "Categories",
-        content: description,
-        closable: true
-    });
-    tabContainer.addChild(categoriesTab);
-
     var tasksTab = new dijit.layout.BorderContainer({
         title: "Tasks..."
     });
