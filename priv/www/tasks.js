@@ -1,21 +1,45 @@
 dojo.require("dijit.layout.TabContainer");
-dojo.require("dijit.layout.ContentPane");
+dojo.require("dojox.data.ClientFilter");
+dojo.require("dojox.data.JsonRestStore");
+dojo.require("dojox.grid.DataGrid");
 
 dojo.addOnLoad(function() {
-    var content = dojo.byId("tasks").innerHTML;
     document.body.innerHTML='<div id="uiContainer" style="border: 1px solid #ccc"></div>';
     document.body.setAttribute("class", "tundra");
     document.body.setAttribute("style", "");
     var tabContainer = new dijit.layout.TabContainer({
-        "design": "sidebar",
-        "style": "height: 400px;"
+        style: "height: 400px;"
     },
     "uiContainer");
 
-    var tasksTab = new dijit.layout.ContentPane({
-        "title": "Tasks...",
-        "content": content
+    var tasksStructure = [{
+        field: "id",
+        name: "Task ID",
+        width: "70px"
+    },{
+        field: "headline",
+        name: "Headline",
+        width: "auto"
+    }];
+
+    var tasksTab = new dojox.grid.DataGrid({
+        title: "Tasks...",
+        store: new dojox.data.JsonRestStore({target:"."}),
+        structure: tasksStructure,
+        clientSort: true,
+        queryOptions:{cache:true}
     });
+
+    dojo.connect(tasksTab, "onRowClick", function() {
+        var selectedTask = tasksTab.selection.getSelected()[0];
+        window.location = selectedTask.id;
+    });
+
+    dojo.connect(tasksTab, "onRowDblClick", function() {
+        var selectedTask = tasksTab.selection.getSelected()[0];
+        window.open(window.location + selectedTask.id);
+    });
+
     tabContainer.addChild(tasksTab);
 
     tabContainer.startup();

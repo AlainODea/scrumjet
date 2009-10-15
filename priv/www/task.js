@@ -1,6 +1,7 @@
 dojo.require("dijit.layout.TabContainer");
 dojo.require("dijit.layout.ContentPane");
 dojo.require("dijit.layout.BorderContainer");
+dojo.require("dojox.data.ClientFilter");
 dojo.require("dojox.data.JsonRestStore");
 dojo.require("dojox.grid.DataGrid");
 
@@ -23,6 +24,13 @@ dojo.addOnLoad(function() {
     });
     tabContainer.addChild(taskTab);
 
+    var categoriesTab = new dijit.layout.ContentPane({
+        title: "Categories",
+        content: description,
+        closable: true
+    });
+    tabContainer.addChild(categoriesTab);
+
     var tasksTab = new dijit.layout.BorderContainer({
         title: "Tasks..."
     });
@@ -39,13 +47,15 @@ dojo.addOnLoad(function() {
 
     var tasksGrid = new dojox.grid.DataGrid({
         store: new dojox.data.JsonRestStore({target:"."}),
-        structure: tasksStructure
+        structure: tasksStructure,
+        clientSort: true,
+        queryOptions:{cache:true}
     });
 
     dojo.connect(tasksGrid, "onRowClick", function() {
         var selectedTask = tasksGrid.selection.getSelected()[0];
         window.location = selectedTask.id;
-    })
+    });
 
     tasksTab.addChild(tasksGrid);
 
