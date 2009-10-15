@@ -47,10 +47,11 @@ invalid_range({Start, End}, ReqData, Context) when (End - Start) > 1000 ->
     invalid_range({Start, Start + 1000}, ReqData, Context);
 invalid_range({Start, End}, ReqData, Context) ->
     Count = mnesia:table_info(scrumjet_task, size),
+    ActualEnd = lists:min([End, Count]),
     ContentRange = lists:flatten(io_lib:format(
-        "items ~w-~w/~w", [Start, End, Count])),
+        "items ~w-~w/~w", [Start, ActualEnd, Count])),
     NewReqData = wrq:set_resp_header("Content-Range", ContentRange, ReqData),
-    {false, NewReqData, Context#context{range= {Start,End} }};
+    {false, NewReqData, Context#context{range= {Start,ActualEnd} }};
 invalid_range(undefined, ReqData, Context) ->
     % default to 1000 items or whole data set
     Count = mnesia:table_info(scrumjet_task, size),
