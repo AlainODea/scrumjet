@@ -43,8 +43,8 @@ to_html(ReqData, Context=#context{board_category=
 "<title>Board/Category ID: ">>,ID,<<"/">>,CategoryID,<<" - ScrumJet</title>"
 "<body>"
 "<a id='category' href='">>,
-uri:for(#scrumjet_category{id=CategoryID}),<<"'>Category ">>,CategoryID,<<"</a>"
-"is on <a id='board' href='">>,uri:for(#scrumjet_board{id=ID}),
+scrumjet_uri:for(#scrumjet_category{id=CategoryID}),<<"'>Category ">>,CategoryID,<<"</a>"
+"is on <a id='board' href='">>,scrumjet_uri:for(#scrumjet_board{id=ID}),
 <<"'>Board ">>,ID,<<"</a></body></html>">>], ReqData, Context}.
 
 allowed_methods(ReqData, Context) -> {['GET', 'HEAD', 'PUT'], ReqData, Context}.

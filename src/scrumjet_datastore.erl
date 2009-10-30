@@ -73,7 +73,7 @@ find(Params) ->
 
 range(Type, Start, End) ->
     F = fun() ->
-        mnesia_ext:limit(Type, Start, End - Start)
+        scrumjet_mnesia:limit(Type, Start, End - Start)
     end,
     {atomic, Records} = mnesia:transaction(F),
     Records.

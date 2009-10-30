@@ -1,6 +1,6 @@
--module (json).
+-module(scrumjet_json).
 
--export ([value/1]).
+-export([value/1]).
 
 -include("scrumjet.hrl").
 

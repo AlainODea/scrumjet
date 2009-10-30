@@ -45,7 +45,7 @@ to_html(ReqData, Context=#context{task=#scrumjet_task{id=ID,
 <html>
 <head>
 <title>Task ID: ">>,ID,<<" - ScrumJet</title>">>,
-html:head(),
+scrumjet_html:head(),
 <<"<script type='text/javascript' src='/static/task.js'></script>
 </head>
 <body style='display:none'>
@@ -61,7 +61,7 @@ categories(ID),
 ">>], ReqData, Context}.
 
 to_json(ReqData, Context=#context{task=Task}) ->
-    {mochijson2:encode(json:value(Task)), ReqData, Context}.
+    {mochijson2:encode(scrumjet_json:value(Task)), ReqData, Context}.
 
 %% should accept PUT requests to create new tasks
 allowed_methods(ReqData, Context) -> {['GET', 'HEAD', 'PUT'], ReqData, Context}.
@@ -80,5 +80,5 @@ from_webform(ReqData, Context=#context{task=Task}) ->
 
 -spec categories(string()) -> iolist().
 categories(ID) ->
-    lists:foldl(fun html:li/2, [],
+    lists:foldl(fun scrumjet_html:li/2, [],
         scrumjet_category_task:find({categories, ID})).

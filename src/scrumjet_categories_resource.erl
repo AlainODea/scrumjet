@@ -32,6 +32,6 @@ categories(),
 -spec categories() -> iolist().
 categories() ->
     {atomic, List} = mnesia:transaction(fun() ->
-        mnesia:foldl(fun html:li/2, [], scrumjet_category)
+        mnesia:foldl(fun scrumjet_html:li/2, [], scrumjet_category)
     end),
     List.

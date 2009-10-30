@@ -1,6 +1,6 @@
 % Author: Paul Mineiro
 % SOURCE: http://erlanganswers.com/web/mcedemo/mnesia/OrderedBy.html
--module (mnesia_ext).
+-module (scrumjet_mnesia).
 -export ([ limit/3 ]).
 
 limit (Tab, Offset, Number) ->

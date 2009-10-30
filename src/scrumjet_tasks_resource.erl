@@ -66,13 +66,13 @@ to_html(ReqData, Context=#context{range={Start, End}}) ->
 <html>
 <head>
 <title>Tasks - ScrumJet</title>">>,
-html:head(),
+scrumjet_html:head(),
 <<"<script type='text/javascript' src='/static/tasks.js'></script>
 </head>
 <body style='display:none'>
 <h1>ScrumJet Tasks</h1>
 <ul id='tasks'>">>,
-lists:foldl(fun html:li/2, [], tasks(Start, End)),
+lists:foldl(fun scrumjet_html:li/2, [], tasks(Start, End)),
 <<"
 </ul>">>,
 pager_links(Start, End),
@@ -90,7 +90,7 @@ pager_link(Label, Start, End) ->
     io_lib:format("<a href='./?start=~w&end=~w'>~s</a>", [Start, End, Label]).
 
 to_json(ReqData, Context=#context{range={Start, End}}) ->
-    {mochijson2:encode([json:value(T) || T <- tasks(Start, End)]),
+    {mochijson2:encode([scrumjet_json:value(T) || T <- tasks(Start, End)]),
         ReqData, Context}.
 
 -spec range(list()) -> {integer(), integer()}.

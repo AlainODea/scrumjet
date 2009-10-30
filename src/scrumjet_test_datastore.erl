@@ -1,4 +1,4 @@
--module(test_scrumjet_datastore).
+-module(scrumjet_test_datastore).
 
 -include_lib("eunit/include/eunit.hrl").
 -include("scrumjet.hrl").

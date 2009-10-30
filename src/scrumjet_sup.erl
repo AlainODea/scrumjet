@@ -51,7 +51,7 @@ init([]) ->
     {["tasks"], scrumjet_tasks_resource, []},
     {["tasks", '*'], scrumjet_task_resource, []},
     {["board_categories", '*'], scrumjet_board_category_resource, []},
-    {["static", '*'], static_resource, [{root, "priv/www"}]}
+    {["static", '*'], scrumjet_static_resource, [{root, "priv/www"}]}
     ],
     WebConfig = [
         {ip, Ip},

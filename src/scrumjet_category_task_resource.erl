@@ -43,9 +43,9 @@ to_html(ReqData, Context=#context{record=
 <head>
 <title>Category/Task ID: ">>,ID,<<"/">>,TaskID,<<" - ScrumJet</title>
 <body>
-<a id='task' href='">>,uri:for(#scrumjet_task{id=TaskID}),
+<a id='task' href='">>,scrumjet_uri:for(#scrumjet_task{id=TaskID}),
 <<"'>Task ">>,TaskID,<<"</a> is in <a id='category'
-href='">>,uri:for(#scrumjet_category{id=ID}),<<"'>Category ">>,ID,<<"</a>
+href='">>,scrumjet_uri:for(#scrumjet_category{id=ID}),<<"'>Category ">>,ID,<<"</a>
 </body>
 </html>
 ">>], ReqData, Context}.

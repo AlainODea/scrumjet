@@ -1,4 +1,4 @@
--module(html).
+-module(scrumjet_html).
 
 -include("scrumjet.hrl").
 -export([li/2, to_entities/1, head/0]).
@@ -10,7 +10,7 @@ li(R=#scrumjet_board{id=ID, title=  L}, Items) -> li_("board", R, L, ID, Items).
 
 -spec li_(string(), #scrumjet_task{}|#scrumjet_category{}|#scrumjet_board{}, string(), string(), [iolist()]) -> iolist().
 li_(Class, Record, Label, ID, Items) ->
-    Href = uri:for(Record),
+    Href = scrumjet_uri:for(Record),
     [<<"
 <li><a class='">>,Class,<<"' href='">>,Href,<<"'>">>,Label,<<" (">>,ID,<<")</a></li>">>|Items].
 

@@ -1,4 +1,4 @@
--module(uri).
+-module(scrumjet_uri).
 
 -include("scrumjet.hrl").
 

@@ -2,7 +2,7 @@ ERL          ?= erl
 EBIN_DIRS    := $(wildcard deps/*/ebin)
 APP          := scrumjet
 
-all: deps/webmachine erl ebin/$(APP).app
+all: deps/webmachine erl
 
 deps/webmachine:
 	@mkdir -p deps
@@ -19,10 +19,7 @@ docs:
 
 clean:
 	@echo "removing:"
-	@rm -fv ebin/*.beam ebin/*.app
-
-ebin/$(APP).app:
-	@cp -v src/$(APP).app $@
+	@(cd ebin;find . -type f ! -name ${APP}.app -execdir rm -v {} +)
 
 run:
 	./start-dev.sh

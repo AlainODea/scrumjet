@@ -67,8 +67,8 @@ from_webform(ReqData, Context=#context{category=Category}) ->
 
 -spec tasks(string()) -> iolist().
 tasks(ID) ->
-    lists:foldl(fun html:li/2, [], scrumjet_category_task:find({tasks, ID})).
+    lists:foldl(fun scrumjet_html:li/2, [], scrumjet_category_task:find({tasks, ID})).
 
 -spec boards(string()) -> iolist().
 boards(ID) ->
-    lists:foldl(fun html:li/2, [], scrumjet_board_category:find({boards, ID})).
+    lists:foldl(fun scrumjet_html:li/2, [], scrumjet_board_category:find({boards, ID})).

@@ -32,6 +32,6 @@ boards(),
 -spec boards() -> iolist().
 boards() ->
     {atomic, List} = mnesia:transaction(fun() ->
-        mnesia:foldl(fun html:li/2, [], scrumjet_board)
+        mnesia:foldl(fun scrumjet_html:li/2, [], scrumjet_board)
     end),
     List.

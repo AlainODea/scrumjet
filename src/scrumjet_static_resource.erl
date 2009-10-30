@@ -4,7 +4,7 @@
 %% @author Alain O'Dea <alain.odea@gmail.com>
 %% @copyright 2008-2009 Basho Technologies, Inc.
 
--module (static_resource).
+-module(scrumjet_static_resource).
 -export([init/1]).
 -export([allowed_methods/2,
      resource_exists/2,
