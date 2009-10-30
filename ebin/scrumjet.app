@@ -1,6 +1,6 @@
 {application, scrumjet,
  [{description, "ScrumJet: RESTful task tracking experiment built with webmachine"},
-  {vsn, "0.1"},
+  {vsn, "0.1.0"},
   {modules, [
     scrumjet
     scrumjet_api
